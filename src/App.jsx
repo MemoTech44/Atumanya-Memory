@@ -1,42 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+
+// Import Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Hero from './components/Hero';
-import Projects from './components/Projects';
-import HireMe from './components/HireMe';
+
+// Import Pages
+import Home from './pages/Home';
+import About from './pages/About';
+import Resume from './pages/Resume';
+import Services from './pages/Services';
+import Portfolio from './pages/Portfolio';
+import HireMe from './pages/HireMe';
+
+// Scroll Management Component
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 function App() {
-  const mainWrapper = {
-    backgroundColor: '#020617', // Consistent deep navy/black
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 0,
-    padding: 0,
-    fontFamily: '"Plus Jakarta Sans", sans-serif'
-  };
-
   return (
-    <div style={mainWrapper}>
-      <Navbar />
+    <Router>
+      {/* ScrollToTop must be inside Router but outside Routes */}
+      <ScrollToTop />
       
-      <main style={{ flex: 1 }}>
-        {/* Sections are stacked for a smooth scrolling experience */}
-        <section id="home">
-          <Hero />
-        </section>
+      <div className="App" style={{ backgroundColor: '#020617', minHeight: '100vh' }}>
+        <Navbar />
+        
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/resume" element={<Resume />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/hire-me" element={<HireMe />} />
+          </Routes>
+        </main>
 
-        <section id="projects">
-          <Projects />
-        </section>
-
-        <section id="hire-me">
-          <HireMe />
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 

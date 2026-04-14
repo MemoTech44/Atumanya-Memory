@@ -7,7 +7,7 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  // Close menu when navigating
+  // Close menu when navigating or resizing
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
@@ -62,6 +62,14 @@ const Navbar = () => {
   return (
     <>
       <style>{`
+        /* Prevent horizontal overflow on the whole site */
+        html, body {
+          overflow-x: hidden;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+        }
+
         .nav-links {
           display: flex;
           align-items: center;
@@ -73,7 +81,8 @@ const Navbar = () => {
           flex-direction: column;
           gap: 6px;
           cursor: pointer;
-          z-index: 1001;
+          z-index: 2000; /* Higher than menu */
+          padding: 5px;
         }
 
         .hamburger span {
@@ -81,46 +90,51 @@ const Navbar = () => {
           height: 3px;
           background: #fbbf24;
           border-radius: 10px;
-          transition: 0.3s;
+          transition: 0.3s ease;
         }
 
         @media (max-width: 992px) {
           .hamburger { display: flex; }
 
           .nav-links {
-            position: absolute;
-            top: 100%;
-            right: ${isOpen ? '0' : '-110%'};
-            width: 280px;
-            /* height: auto ensures the box ends after the Hire Me button */
-            height: auto; 
+            position: fixed;
+            top: 80px; /* Positioned below the navbar */
+            right: 20px;
+            width: 260px;
+            height: auto;
             background: #0f172a;
-            padding: 30px 20px;
+            padding: 25px;
             flex-direction: column;
-            /* align-items: center handles the horizontal centering */
-            align-items: center; 
-            gap: 15px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-bottom-left-radius: 30px;
-            border-left: 1px solid rgba(251, 191, 36, 0.15);
-            border-bottom: 1px solid rgba(251, 191, 36, 0.15);
-            box-shadow: -15px 15px 40px rgba(0,0,0,0.5);
+            align-items: center;
+            gap: 10px;
+            
+            /* Slide Animation */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            transform: ${isOpen ? 'translateX(0)' : 'translateX(120%)'};
+            opacity: ${isOpen ? '1' : '0'};
+            pointer-events: ${isOpen ? 'all' : 'none'}; /* Prevents clicking closed menu */
+            
+            border-radius: 20px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            z-index: 1999;
           }
 
           .nav-links a {
             width: 100%;
             text-align: center;
-            padding: 12px 0;
+            padding: 14px 0;
+            font-size: 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
           }
 
-          /* Special treatment for Hire Me button in mobile menu */
           .nav-links a:last-child {
             border-bottom: none;
-            width: 85%;
+            width: 90%;
             margin-top: 10px;
           }
 
+          /* X animation for hamburger */
           .open span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
           .open span:nth-child(2) { opacity: 0; }
           .open span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
@@ -132,12 +146,14 @@ const Navbar = () => {
           ATUMANYA MEMORY
         </Link>
 
+        {/* Hamburger Icon */}
         <div className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
           <span></span>
           <span></span>
           <span></span>
         </div>
 
+        {/* Navigation Links */}
         <div className="nav-links">
           {[
             { name: 'Home', path: '/' },

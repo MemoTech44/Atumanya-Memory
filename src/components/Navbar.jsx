@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
@@ -7,7 +7,11 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  // Styling Objects
+  // Close menu when navigating
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
+
   const navStyle = {
     backgroundColor: 'rgba(2, 6, 23, 0.95)',
     color: '#ffffff',
@@ -15,7 +19,7 @@ const Navbar = () => {
     position: 'sticky',
     top: 0,
     zIndex: 1000,
-    borderBottom: '1px solid rgba(251, 191, 36, 0.1)', 
+    borderBottom: '1px solid rgba(251, 191, 36, 0.1)',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -45,14 +49,14 @@ const Navbar = () => {
   const hireButtonStyle = {
     backgroundColor: '#fbbf24',
     color: '#020617',
-    padding: '10px 24px',
+    padding: '12px 30px',
     borderRadius: '100px',
     textDecoration: 'none',
     fontWeight: '800',
     fontSize: '0.85rem',
-    transition: 'transform 0.2s ease',
+    transition: '0.3s ease',
     boxShadow: '0 4px 15px rgba(251, 191, 36, 0.2)',
-    textAlign: 'center'
+    textAlign: 'center',
   };
 
   return (
@@ -67,13 +71,13 @@ const Navbar = () => {
         .hamburger {
           display: none;
           flex-direction: column;
-          gap: 5px;
+          gap: 6px;
           cursor: pointer;
           z-index: 1001;
         }
 
         .hamburger span {
-          width: 25px;
+          width: 28px;
           height: 3px;
           background: #fbbf24;
           border-radius: 10px;
@@ -81,51 +85,59 @@ const Navbar = () => {
         }
 
         @media (max-width: 992px) {
+          .hamburger { display: flex; }
+
           .nav-links {
             position: absolute;
             top: 100%;
-            right: ${isOpen ? '0' : '-110%'}; /* Slides completely out of view */
-            height: fit-content;
-            width: 260px;
-            padding: 40px 20px;
+            right: ${isOpen ? '0' : '-110%'};
+            width: 280px;
+            /* height: auto ensures the box ends after the Hire Me button */
+            height: auto; 
             background: #0f172a;
+            padding: 30px 20px;
             flex-direction: column;
-            align-items: stretch; /* Makes button full width in menu */
-            justify-content: flex-start;
+            /* align-items: center handles the horizontal centering */
+            align-items: center; 
+            gap: 15px;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-bottom-left-radius: 35px;
+            border-bottom-left-radius: 30px;
             border-left: 1px solid rgba(251, 191, 36, 0.15);
             border-bottom: 1px solid rgba(251, 191, 36, 0.15);
-            box-shadow: -15px 15px 40px rgba(0,0,0,0.6);
+            box-shadow: -15px 15px 40px rgba(0,0,0,0.5);
           }
 
           .nav-links a {
-            text-align: right;
-            padding: 10px 0;
-            font-size: 1.1rem;
+            width: 100%;
+            text-align: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
           }
 
-          .hamburger {
-            display: flex;
+          /* Special treatment for Hire Me button in mobile menu */
+          .nav-links a:last-child {
+            border-bottom: none;
+            width: 85%;
+            margin-top: 10px;
           }
 
-          .open span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+          .open span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
           .open span:nth-child(2) { opacity: 0; }
-          .open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+          .open span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
         }
       `}</style>
 
       <nav style={navStyle}>
-        <Link to="/" style={logoStyle}>ATUMANYA MEMORY</Link>
+        <Link to="/" style={logoStyle} onClick={() => window.scrollTo(0,0)}>
+          ATUMANYA MEMORY
+        </Link>
 
-        {/* Hamburger Icon */}
         <div className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
           <span></span>
           <span></span>
           <span></span>
         </div>
 
-        {/* Navigation Links */}
         <div className="nav-links">
           {[
             { name: 'Home', path: '/' },
@@ -138,9 +150,10 @@ const Navbar = () => {
               key={link.path}
               to={link.path} 
               style={linkStyle(link.path)}
-              onClick={() => setIsOpen(false)}
-              onMouseOver={(e) => e.target.style.color = '#fbbf24'} 
-              onMouseOut={(e) => e.target.style.color = location.pathname === link.path ? '#fbbf24' : '#94a3b8'}
+              onClick={() => {
+                setIsOpen(false);
+                window.scrollTo(0,0);
+              }}
             >
               {link.name}
             </Link>
@@ -149,9 +162,10 @@ const Navbar = () => {
           <Link 
             to="/hire-me" 
             style={hireButtonStyle}
-            onClick={() => setIsOpen(false)}
-            onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+            onClick={() => {
+              setIsOpen(false);
+              window.scrollTo(0,0);
+            }}
           >
             Hire Me
           </Link>

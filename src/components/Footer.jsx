@@ -1,6 +1,9 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Footer = () => {
+  const location = useLocation();
+
   const footerStyle = {
     backgroundColor: '#020617',
     color: '#94a3b8',
@@ -19,6 +22,16 @@ const Footer = () => {
     gap: '40px'
   };
 
+  const linkStyle = (path) => ({
+    color: location.pathname === path ? '#fbbf24' : '#f8fafc',
+    textDecoration: 'none',
+    fontSize: '0.85rem',
+    fontWeight: '700',
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase',
+    transition: '0.3s ease',
+  });
+
   const socialLinkStyle = {
     color: '#fbbf24',
     textDecoration: 'none',
@@ -27,32 +40,16 @@ const Footer = () => {
     display: 'inline-block'
   };
 
-  const navLinkStyle = {
-    color: '#f8fafc',
-    textDecoration: 'none',
-    fontSize: '0.85rem',
-    fontWeight: '700',
-    letterSpacing: '1.5px',
-    textTransform: 'uppercase',
-    transition: 'color 0.3s'
-  };
-
-  // Helper to handle hover logic without external CSS file
-  const handleMouseEnter = (e, color = '#ffffff') => {
-    e.currentTarget.style.color = color;
-    e.currentTarget.style.transform = 'translateY(-5px)';
-  };
-
-  const handleMouseLeave = (e, color = '#fbbf24') => {
-    e.currentTarget.style.color = color;
-    e.currentTarget.style.transform = 'translateY(0)';
+  // Helper to ensure the new page starts at the top
+  const handlePageChange = () => {
+    window.scrollTo(0, 0);
   };
 
   return (
     <footer style={footerStyle}>
       <div style={containerStyle}>
         
-        {/* Brand & Identity Section */}
+        {/* Brand & Identity */}
         <div>
           <h3 style={{ 
             color: 'white', 
@@ -61,7 +58,7 @@ const Footer = () => {
             margin: '0 0 10px 0',
             letterSpacing: '-1.5px' 
           }}>
-            Atumanya Memory
+            ATUMANYA MEMORY
           </h3>
           <p style={{ 
             color: '#fbbf24', 
@@ -74,16 +71,32 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Quick Navigation */}
+        {/* Navigation - Identical to Navbar logic */}
         <nav style={{ 
           display: 'flex', 
           justifyContent: 'center', 
           flexWrap: 'wrap', 
           gap: '30px' 
         }}>
-          <a href="#home" style={navLinkStyle} onMouseOver={(e) => e.target.style.color = '#fbbf24'} onMouseOut={(e) => e.target.style.color = '#f8fafc'}>Home</a>
-          <a href="#projects" style={navLinkStyle} onMouseOver={(e) => e.target.style.color = '#fbbf24'} onMouseOut={(e) => e.target.style.color = '#f8fafc'}>Projects</a>
-          <a href="#contact" style={navLinkStyle} onMouseOver={(e) => e.target.style.color = '#fbbf24'} onMouseOut={(e) => e.target.style.color = '#f8fafc'}>Hire Me</a>
+          {[
+            { name: 'Home', path: '/' },
+            { name: 'About Me', path: '/about' },
+            { name: 'Resume', path: '/resume' },
+            { name: 'Services', path: '/services' },
+            { name: 'Portfolio', path: '/portfolio' },
+            { name: 'Hire Me', path: '/hire-me' }
+          ].map((link) => (
+            <Link 
+              key={link.path}
+              to={link.path} 
+              style={linkStyle(link.path)}
+              onClick={handlePageChange}
+              onMouseOver={(e) => e.target.style.color = '#fbbf24'} 
+              onMouseOut={(e) => e.target.style.color = location.pathname === link.path ? '#fbbf24' : '#f8fafc'}
+            >
+              {link.name}
+            </Link>
+          ))}
         </nav>
 
         {/* Social Ecosystem */}
@@ -95,27 +108,33 @@ const Footer = () => {
           padding: '10px 0'
         }}>
           <a href="https://github.com/MemoTech44" target="_blank" rel="noreferrer" style={socialLinkStyle}
-             onMouseEnter={(e) => handleMouseEnter(e)} onMouseLeave={(e) => handleMouseLeave(e)}>
+             onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <i className="fa-brands fa-github"></i>
           </a>
           <a href="https://wa.me/256704405903" target="_blank" rel="noreferrer" style={socialLinkStyle}
-             onMouseEnter={(e) => handleMouseEnter(e, '#25D366')} onMouseLeave={(e) => handleMouseLeave(e)}>
+             onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <i className="fa-brands fa-whatsapp"></i>
           </a>
           <a href="https://x.com/AtumanyaMemory" target="_blank" rel="noreferrer" style={socialLinkStyle}
-             onMouseEnter={(e) => handleMouseEnter(e)} onMouseLeave={(e) => handleMouseLeave(e)}>
+             onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <i className="fa-brands fa-x-twitter"></i>
           </a>
           <a href="https://www.instagram.com/atumanyamemory/" target="_blank" rel="noreferrer" style={socialLinkStyle}
-             onMouseEnter={(e) => handleMouseEnter(e, '#E4405F')} onMouseLeave={(e) => handleMouseLeave(e)}>
+             onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <i className="fa-brands fa-instagram"></i>
           </a>
           <a href="https://www.facebook.com/profile.php?id=100070780981811" target="_blank" rel="noreferrer" style={socialLinkStyle}
-             onMouseEnter={(e) => handleMouseEnter(e, '#1877F2')} onMouseLeave={(e) => handleMouseLeave(e)}>
+             onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <i className="fa-brands fa-facebook"></i>
           </a>
           <a href="https://www.tiktok.com/@memotech_1" target="_blank" rel="noreferrer" style={socialLinkStyle}
-             onMouseEnter={(e) => handleMouseEnter(e)} onMouseLeave={(e) => handleMouseLeave(e)}>
+             onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+             onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
             <i className="fa-brands fa-tiktok"></i>
           </a>
         </div>

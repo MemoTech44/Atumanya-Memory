@@ -17,10 +17,10 @@ const Resume = () => {
 
         .resume-wrapper {
           width: 100%;
-          max-width: 1100px; /* Widened to support two-column grid */
+          max-width: 1100px; 
           display: flex;
           flex-direction: column;
-          gap: 80px;
+          gap: 60px;
         }
 
         .section-header {
@@ -37,7 +37,6 @@ const Resume = () => {
           text-transform: uppercase;
         }
 
-        /* The Grid System: 2 columns on large screens */
         .content-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -77,16 +76,25 @@ const Resume = () => {
           line-height: 1.8;
         }
 
-        .project-list li b {
+        .badge-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
           color: #f8fafc;
+          font-weight: 600;
+          font-size: 0.95rem;
+          margin-bottom: 10px;
         }
 
-        /* RESPONSIVE BREAKPOINT */
+        .badge-icon {
+          color: #fbbf24;
+          font-size: 1.2rem;
+        }
+
         @media (max-width: 850px) {
           .content-grid {
-            grid-template-columns: 1fr; /* Stacks to 1 column on tablets/phones */
+            grid-template-columns: 1fr;
           }
-          
           h1 { font-size: 2.5rem !important; }
         }
       `}</style>
@@ -105,7 +113,7 @@ const Resume = () => {
             </p>
           </div>
 
-          {/* Experience Grid */}
+          {/* Education & Experience */}
           <div>
             <div className="section-header">
               <span className="section-title">Development & Education</span>
@@ -121,10 +129,38 @@ const Resume = () => {
                 <h3 style={{ fontSize: '1.3rem', color: '#f8fafc', margin: '0' }}>Senior Full-Stack Developer</h3>
                 <div style={{ color: '#fbbf24', fontWeight: '600', margin: '5px 0 10px', fontSize: '0.9rem' }}>Web Projects</div>
                 <ul className="project-list">
-                  <li><b style={{fontWeight: '700'}}>Adit Construction:</b> Corporate engineering portal.</li>
-                  <li><b style={{fontWeight: '700'}}>Giants Secondary School:</b> Student information system.</li>
-                  <li><b style={{fontWeight: '700'}}>Nuvia Agencies:</b> Business service platform.</li>
+                  <li><b style={{color: '#f8fafc'}}>Adit Construction:</b> Corporate engineering portal.</li>
+                  <li><b style={{color: '#f8fafc'}}>Giants Secondary School:</b> Student information system.</li>
+                  <li><b style={{color: '#f8fafc'}}>Nuvia Agencies:</b> Business service platform.</li>
                 </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Certifications & Cisco Badges Section */}
+          <div>
+            <div className="section-header">
+              <span className="section-title">Professional Certifications</span>
+            </div>
+            <div className="content-grid">
+              <div className="entry">
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', margin: '0' }}>Official Certificates</h3>
+                <div style={{ color: '#fbbf24', fontWeight: '600', margin: '5px 0 15px', fontSize: '0.85rem' }}>Cisco Networking Academy</div>
+                <ul className="project-list">
+                  <li>• Computer Hardware Basics</li>
+                  <li>• Cyber Threat Management</li>
+                </ul>
+              </div>
+
+              <div className="entry">
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', margin: '0' }}>Digital Badges</h3>
+                <div style={{ color: '#fbbf24', fontWeight: '600', margin: '5px 0 15px', fontSize: '0.85rem' }}>Verified Skills</div>
+                <div className="badge-item">
+                  <span className="badge-icon">🛡️</span> Cyber Threat Management
+                </div>
+                <div className="badge-item">
+                  <span className="badge-icon">⚙️</span> Computer Hardware Basics
+                </div>
               </div>
             </div>
           </div>
@@ -157,22 +193,6 @@ const Resume = () => {
                 </ul>
               </div>
             </div>
-          </div>
-
-          {/* Action */}
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <button style={{
-              backgroundColor: 'transparent',
-              border: '2px solid #fbbf24',
-              color: '#fbbf24',
-              padding: '16px 45px',
-              borderRadius: '15px',
-              fontWeight: '800',
-              cursor: 'pointer',
-              transition: '0.3s'
-            }}>
-              DOWNLOAD FULL CV
-            </button>
           </div>
 
         </div>

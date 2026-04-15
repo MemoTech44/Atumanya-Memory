@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { db } from '../firebaseConfig'; // Import your Firestore instance
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const HireMe = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +9,35 @@ const HireMe = () => {
     projectType: 'Website Development',
     message: ''
   });
+
+  const [isSending, setIsSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  // Handle Form Submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSending(true);
+
+    try {
+      // Create a document in the "inquiries" collection
+      await addDoc(collection(db, "inquiries"), {
+        name: formData.name,
+        email: formData.email,
+        category: formData.projectType,
+        message: formData.message,
+        createdAt: serverTimestamp(), // This allows sorting in the Admin Panel
+      });
+
+      setSent(true);
+      setFormData({ name: '', email: '', projectType: 'Website Development', message: '' });
+      alert("Message sent! I will get back to you shortly.");
+    } catch (error) {
+      console.error("Error sending message: ", error);
+      alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   const sectionStyle = {
     backgroundColor: '#020617',
@@ -86,7 +117,7 @@ const HireMe = () => {
       </div>
 
       <div style={containerStyle}>
-        {/* Left Side: Contact Info & Socials */}
+        {/* Left Side: Info */}
         <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '25px' }}>
           <h3 style={{ fontSize: '2rem', fontWeight: '800', marginBottom: '10px' }}>Get In Touch</h3>
           <p style={{ lineHeight: '1.8', color: '#94a3b8', fontSize: '1.1rem' }}>
@@ -109,47 +140,15 @@ const HireMe = () => {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
               <div style={iconCircle}><i className="fab fa-whatsapp"></i></div>
-              <a 
-                href="https://wa.me/256773393162" 
-                target="_blank" 
-                rel="noreferrer" 
-                style={{color: '#25D366', fontWeight: 'bold', textDecoration: 'none', fontSize: '1.1rem'}}
-              >
+              <a href="https://wa.me/256773393162" target="_blank" rel="noreferrer" style={{color: '#25D366', fontWeight: 'bold', textDecoration: 'none', fontSize: '1.1rem'}}>
                 Chat on WhatsApp
               </a>
-            </div>
-          </div>
-
-          {/* Social Media */}
-          <div style={{ marginTop: '40px' }}>
-            <p style={{ color: '#fbbf24', fontWeight: '800', letterSpacing: '2px', fontSize: '0.8rem', marginBottom: '20px' }}>
-              CONNECT WITH ME
-            </p>
-            <div style={{ display: 'flex', gap: '25px' }}>
-              {[
-                { icon: 'fa-github', link: 'https://github.com/MemoTech44' },
-                { icon: 'fa-linkedin', link: 'https://www.linkedin.com/in/memory-atumanya-b674082bb/' },
-                { icon: 'fa-x-twitter', link: 'https://x.com/AtumanyaMemory' },
-                { icon: 'fa-tiktok', link: 'https://www.tiktok.com/@memotech_1' }
-              ].map((social, idx) => (
-                <a 
-                  key={idx} 
-                  href={social.link} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  style={{ fontSize: '1.5rem', color: '#94a3b8', transition: '0.3s' }}
-                  onMouseOver={(e) => e.target.style.color = '#fbbf24'}
-                  onMouseOut={(e) => e.target.style.color = '#94a3b8'}
-                >
-                  <i className={`fab ${social.icon}`}></i>
-                </a>
-              ))}
             </div>
           </div>
         </div>
 
         {/* Right Side: Contact Form */}
-        <form style={formStyle} onSubmit={(e) => e.preventDefault()}>
+        <form style={formStyle} onSubmit={handleSubmit}>
           <div>
             <label style={{ fontSize: '0.75rem', color: '#fbbf24', fontWeight: '800', letterSpacing: '1px' }}>FULL NAME</label>
             <input 
@@ -158,6 +157,9 @@ const HireMe = () => {
               style={inputStyle} 
               onFocus={handleInputFocus} 
               onBlur={handleInputBlur}
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              required
             />
           </div>
 
@@ -169,12 +171,21 @@ const HireMe = () => {
               style={inputStyle} 
               onFocus={handleInputFocus} 
               onBlur={handleInputBlur}
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              required
             />
           </div>
 
           <div>
             <label style={{ fontSize: '0.75rem', color: '#fbbf24', fontWeight: '800', letterSpacing: '1px' }}>PROJECT CATEGORY</label>
-            <select style={inputStyle} onFocus={handleInputFocus} onBlur={handleInputBlur}>
+            <select 
+              style={inputStyle} 
+              onFocus={handleInputFocus} 
+              onBlur={handleInputBlur}
+              value={formData.projectType}
+              onChange={(e) => setFormData({...formData, projectType: e.target.value})}
+            >
               <option>Website Development</option>
               <option>Mobile App Development</option>
               <option>System Architecture</option>
@@ -186,25 +197,33 @@ const HireMe = () => {
             <label style={{ fontSize: '0.75rem', color: '#fbbf24', fontWeight: '800', letterSpacing: '1px' }}>PROJECT DETAILS</label>
             <textarea 
               rows="4" 
-              placeholder="Tell me about your vision for Adit Construction or Pam Waste..." 
+              placeholder="Tell me about your vision..." 
               style={inputStyle} 
               onFocus={handleInputFocus} 
               onBlur={handleInputBlur}
+              value={formData.message}
+              onChange={(e) => setFormData({...formData, message: e.target.value})}
+              required
             ></textarea>
           </div>
 
           <button 
             type="submit" 
+            disabled={isSending}
             style={{
-               backgroundColor: '#fbbf24', color: '#020617', padding: '18px', 
-               borderRadius: '14px', fontWeight: '900', border: 'none', 
-               cursor: 'pointer', fontSize: '1rem', marginTop: '10px',
+               backgroundColor: isSending ? '#94a3b8' : '#fbbf24', 
+               color: '#020617', 
+               padding: '18px', 
+               borderRadius: '14px', 
+               fontWeight: '900', 
+               border: 'none', 
+               cursor: isSending ? 'not-allowed' : 'pointer', 
+               fontSize: '1rem', 
+               marginTop: '10px',
                transition: '0.3s'
             }}
-            onMouseOver={(e) => e.target.style.transform = 'translateY(-3px)'}
-            onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
           >
-            Start Collaboration
+            {isSending ? 'Sending...' : 'Start Collaboration'}
           </button>
         </form>
       </div>
